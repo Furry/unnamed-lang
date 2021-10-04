@@ -122,7 +122,7 @@ impl Lexer {
                 return size;
             }
         }
-        sizex
+        size
     }
 }
 
