@@ -31,9 +31,10 @@ pub enum Token {
     Dot,                     // .
     DoubleQuote,             // "
     SingleQuote,             // '
-    BackTick,               // `
+    BackTick,                // `
     Space,                   // ' '
-    
+    NewLine,                 // \n
+    Return,                  // \r
     Unknown(char),           // Unknown
 
 }
@@ -85,6 +86,8 @@ impl Into<char> for Token {
             Token::LessThanSign => '<',
             Token::GreaterThanSign => '>',
             Token::Space => ' ',
+            Token::NewLine => '\n',
+            Token::Return => '\r',
             Token::Unknown(c) => c,
         }
     }
@@ -185,6 +188,8 @@ impl Iterator for LexerIntoIterator {
                 '\'' => Token::SingleQuote,
                 '`' => Token::BackTick,
                 ' ' => Token::Space,
+                '\n' => Token::NewLine,
+                '\r' => Token::Return,
                 _ => Token::Unknown(c),
             });
         }
