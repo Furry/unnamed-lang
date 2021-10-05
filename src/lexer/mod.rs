@@ -1,198 +1,97 @@
-use std::convert::TryInto;
+pub mod token;
 
-#[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash)]
-pub enum Token {
-    OpenParenthesis,         // (
-    CloseParenthesis,        // )
-    OpenSquareBracket,       // [
-    CloseSquareBracket,      // ]
-    OpenCurlyBracket,        // {
-    CloseCurlyBracket,       // }
+use token::Token;
+use super::utils::string;
 
-    // Operators
-    PlusSign,                // +
-    MinusSign,               // -
-    Asterisk,                // *
-    ForwardSlash,            // /
-    BackSlash,               // \
-    PercentSign,             // %
-    EqualsSign,              // =
-    LessThanSign,            // <
-    GreaterThanSign,         // >
-    Ampersand,               // &
-    VerticalBar,             // |
-    Caret,                   // ^
-    ExclamationMark,         // !
-    Tilde,                   // ~
-    QuestionMark,            // ?
-    Colon,                   // :
-    Semicolon,               // ;
-    Comma,                   // ,
-    Dot,                     // .
-    DoubleQuote,             // "
-    SingleQuote,             // '
-    BackTick,                // `
-    Space,                   // ' '
-    NewLine,                 // \n
-    Return,                  // \r
-    Unknown(char),           // Unknown
-
-}
-
-#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub struct Lexer {
-    source: String,
-    position: usize,
+    input: String,
 }
 
-impl Token {
-    pub fn is_operator(&self) -> bool {
-        match self {
-            Token::Unknown(_) => false,
-            _ => true
-        }
-    }
-}
-
-impl Into<char> for Token {
-    fn into(self) -> char {
-        match self {
-            Token::OpenParenthesis => '(',
-            Token::CloseParenthesis => ')',
-            Token::OpenSquareBracket => '[',
-            Token::CloseSquareBracket => ']',
-            Token::OpenCurlyBracket => '{',
-            Token::CloseCurlyBracket => '}',
-            Token::Ampersand => '&',
-            Token::VerticalBar => '|',
-            Token::Caret => '^',
-            Token::ExclamationMark => '!',
-            Token::Tilde => '~',
-            Token::QuestionMark => '?',
-            Token::Colon => ':',
-            Token::Semicolon => ';',
-            Token::Comma => ',',
-            Token::Dot => '.',
-            Token::DoubleQuote => '"',
-            Token::SingleQuote => '\'',
-            Token::BackTick => '`',
-            Token::PlusSign => '+',
-            Token::MinusSign => '-',
-            Token::Asterisk => '*',
-            Token::ForwardSlash => '/',
-            Token::BackSlash => '\\',
-            Token::PercentSign => '%',
-            Token::EqualsSign => '=',
-            Token::LessThanSign => '<',
-            Token::GreaterThanSign => '>',
-            Token::Space => ' ',
-            Token::NewLine => '\n',
-            Token::Return => '\r',
-            Token::Unknown(c) => c,
-        }
-    }
-}
-
-impl Lexer {
-    pub fn new<S: Into<String>>(source: S) -> Lexer {
-        Lexer {
-            source: source.into(),
-            position: 0,
-        }
-    }
-
-    pub fn segment(&self, start: usize, end: Token) -> Vec<Token> {
-        let mut tokens: Vec<Token> = Vec::new();
-        // let mut tokens = Vec::new();
-        self.clone().into_iter()
-            .skip(start)
-            .take_while(|t| *t != end)
-            .for_each(|t| tokens.push(t));
-        tokens
-    }
-
-    pub fn forward(&mut self, token: Token) -> usize {
-        let mut size: usize = 0.try_into().unwrap();
-
-        let itr = self.clone()
-            .into_iter()
-            .skip(self.position);
-
-        for item in itr {
-            if item == token {
-                size += 1;
-            } else {
-                return size;
-            }
-        }
-        size
-    }
-}
-
-pub struct LexerIntoIterator {
+pub struct LexerIntoIter {
     lexer: Lexer,
-    index: usize,
+    position: usize,
 }
 
 impl IntoIterator for Lexer {
     type Item = Token;
-    type IntoIter = LexerIntoIterator;
-
+    type IntoIter = LexerIntoIter;
+    
     fn into_iter(self) -> Self::IntoIter {
-        LexerIntoIterator {
+        LexerIntoIter {
             lexer: self,
-            index: 0,
+            position: 0,
         }
     }
 }
 
-impl Iterator for LexerIntoIterator {
+impl Iterator for LexerIntoIter {
     type Item = Token;
     fn next(&mut self) -> Option<Self::Item> {
-        let mut token = None;
-        if self.index < self.lexer.source.len() {
-            let c = self
-                .lexer
-                .source
-                .chars()
-                .nth(self.index)
-                .unwrap();
-            self.index += 1;
-            token = Some(match c {
-                '(' => Token::OpenParenthesis,
-                ')' => Token::CloseParenthesis,
-                '[' => Token::OpenSquareBracket,
-                ']' => Token::CloseSquareBracket,
-                '{' => Token::OpenCurlyBracket,
-                '}' => Token::CloseCurlyBracket,
-                '+' => Token::PlusSign,
-                '-' => Token::MinusSign,
-                '*' => Token::Asterisk,
-                '/' => Token::ForwardSlash,
-                '\\' => Token::BackSlash,
-                '%' => Token::PercentSign,
-                '=' => Token::EqualsSign,
-                '<' => Token::LessThanSign,
-                '>' => Token::GreaterThanSign,
-                '&' => Token::Ampersand,
-                '|' => Token::VerticalBar,
-                '^' => Token::Caret,
-                '!' => Token::ExclamationMark,
-                '~' => Token::Tilde,
-                '?' => Token::QuestionMark,
-                ':' => Token::Colon,
-                ';' => Token::Semicolon,
-                ',' => Token::Comma,
-                '.' => Token::Dot,
-                '"' => Token::DoubleQuote,
-                '\'' => Token::SingleQuote,
-                '`' => Token::BackTick,
-                ' ' => Token::Space,
-                '\n' => Token::NewLine,
-                '\r' => Token::Return,
-                _ => Token::Unknown(c),
-            });
+        let input = self.lexer.input.clone();
+
+        // Consume characters until we find a token.
+        // let mut chars = input.chars().skip(self.position);
+
+        // self.position += 1;
+        // match input.chars().nth(self.position) {
+        //     Some(c) => Token::from_char(c),
+        //     None => None,
+        // }
+
+        let mut string_cache = String::new();
+        while let Some(c) = input.chars().nth(self.position) {
+            self.position += 1;
+            // println!("indx: {}, char: {}", self.position, c);
+            if Token::from_char(c).is_some() {
+                if Token::is_token(c) {
+                    // println!("token: {}", c);
+                    if string_cache.len() > 1 {
+                        return Some(Token::from_str(string_cache));
+                    } else {
+                        return Token::from_char(c);
+                    }
+                } else {
+                    string_cache.push(c);
+                }
+            } else {
+                return None
+            }
         }
-        token
+
+        None
+        // Token::from_char(string_cache.chars().nth(0).unwrap())
+
+        // let mut token_cache = String::new();
+        // while let Some(c) = chars.next() {
+        //     match c {
+        //         ' ' | '\n' | '\t' => {
+        //             if token_cache.len() > 0 {
+        //                 break;
+        //             }
+        //         },
+        //         _ => {
+        //             token_cache.push(c);
+        //         },
+        //     }
+        //     self.position += 1;
+        // }
+
+        // // Return the token.
+        // if token_cache.len() == 1 {
+        //     // First element from tokenCache
+        //     Token::from_char(token_cache.chars().next().unwrap())
+        // } else {
+        //     Some(Token::from_str(token_cache))
+        // }
+
+        
+    }
+}
+
+impl Lexer {
+    pub fn new<S: Into<String>>(input: S) -> Lexer {
+        Lexer {
+            input: input.into(),
+        }
     }
 }
