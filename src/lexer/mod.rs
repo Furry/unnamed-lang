@@ -44,9 +44,12 @@ impl Iterator for LexerIntoIter {
             // println!("indx: {}, char: {}", self.position, c);
             if Token::from_char(c).is_some() {
                 if Token::is_token(c) {
-                    // println!("token: {}", c);
+                    // println!("token: '{}'", c);
                     if string_cache.len() > 1 {
+                        self.position -= 1;
                         return Some(Token::from_str(string_cache));
+                    } else if string_cache.len() == 1 {
+                        return Some(Token::from_str(string_cache.chars().nth(0).unwrap().to_string()));
                     } else {
                         return Token::from_char(c);
                     }

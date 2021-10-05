@@ -1,4 +1,7 @@
-function myFunction() {
-    return "Hello World!"
+fn myFunction() {
+    return "Hello World!";
 } !emit std::io::out;
 
+emitter Main {
+
+} !tick 1000;

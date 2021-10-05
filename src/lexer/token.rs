@@ -52,6 +52,7 @@ pub enum Token {
     True,                    // true
     False,                   // false
     Null,                    // null
+    Emitter,                 // emitter
 
     Unknown(char),           // Unknown
     
@@ -118,6 +119,7 @@ impl Token {
             "true" => Token::True,
             "false" => Token::False,
             "null" => Token::Null,
+            "emitter" => Token::Emitter,
             _ => Token::Unknown('\0'),
         });
 
