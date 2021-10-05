@@ -5,5 +5,6 @@ pub struct Function {
 }
 
 pub struct Emitter {
-    
+    name: String,
+    tick_speed: i64,
 }
