@@ -12,7 +12,7 @@ impl Parser {
         Parser { lexer };
     }
 
-    pub fn bind(&self) {
-        
+    pub fn bind(&self, name: String) {
+
     }
-}
+}c
