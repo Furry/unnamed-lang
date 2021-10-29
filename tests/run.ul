@@ -1,3 +1,0 @@
-fn myFunction() {
-    return "Hello World!";
-} !emit std::io::out;
