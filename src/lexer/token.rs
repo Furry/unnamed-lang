@@ -55,7 +55,7 @@ pub enum Token {
     Emitter,                 // emitter
 
     Unknown(char),           // Unknown
-    
+
     NumericSequence(String),    // NumericSequence
     AbstractSequence(String),   // AbstractSequence
     AlphabeticSequence(String), // AlphabeticSequence
