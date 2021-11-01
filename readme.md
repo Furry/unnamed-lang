@@ -3,4 +3,4 @@
 A work in progress embeddable programming langauge
 
 ## About
-coming soon uwu a
+coming soon uwu
