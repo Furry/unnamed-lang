@@ -7,7 +7,7 @@ mod tests;
 
 fn main() {
     // Read file tests/run.ul
-    let contents = std::fs::read_to_string("tests/run.ul").unwrap();
+    let contents = std::fs::read_to_string("tests/emitter.rx").unwrap();
     let lexer = lexer::Lexer::new(contents);
 
     for token in lexer {

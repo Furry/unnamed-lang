@@ -1,30 +1,29 @@
-#[derive(Debug, PartialEq, Eq)]
+use super::span::Span;
+
 pub struct Node {
-    pub node_type: NodeType,
-    pub start: Option<Box<Node>>,
-    pub body: Option<Box<Node>>,
-    pub stop: Option<Box<Node>>
+    pub kind: NodeKind,
+    pub span: Span,
+    pub children: Vec<Node>,
 }
 
-pub struct Collector {
-
-}
-
-#[derive(Debug, PartialEq, Eq)]
-pub enum NodeType {
-    Program,
+pub enum NodeKind {
+    Root,
+    Expression,
     Function,
-    String
+    Block,
+    Declaration
 }
 
 impl Node {
-    pub fn new(node_type: NodeType) -> Self {
-        Node { node_type: node_type, start: None, body: None, stop: None }
+    pub fn new(kind: NodeKind, span: Span) -> Node {
+        Node {
+            kind: kind,
+            span: span,
+            children: Vec::new(),
+        }
     }
-}
 
-impl Collector {
-    pub fn new() {
-        
+    pub fn add_child(&mut self, child: Node) {
+        self.children.push(child);
     }
 }

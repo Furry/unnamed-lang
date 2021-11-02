@@ -1,7 +1,7 @@
 use crate::lexer::Lexer;
 
-pub mod structures;
-pub mod collector;
+pub mod consumer;
+pub mod span;
 pub mod node;
 pub mod ast;
 

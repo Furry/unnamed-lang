@@ -1,4 +1,6 @@
 use crate::lexer::{ Lexer, token::Token };
+use super::node::{Node, NodeKind};
+use super::span::Span;
 
 pub fn parse<S: Into<String>>(input: S) {
     let lexer = Lexer::new(input);
@@ -10,24 +12,15 @@ pub fn parse<S: Into<String>>(input: S) {
 }
 
 pub struct AST {
+    pub depth: usize,
     pub root: Node,
 }
 
-pub struct Node {
-    pub token: Token,
-    pub children: Vec<Node>,
-}
-
-impl Node {
-    pub fn new(token: Token) -> Node {
-        Node {
-            token,
-            children: Vec::new(),
+impl AST {
+    pub fn new() -> AST {
+        AST {
+            root: Node::new(NodeKind::Root, Span::new(0, 0)),
+            depth: 0,
         }
     }
-
-    pub fn add_child(&mut self, child: Node) {
-        self.children.push(child);
-    }
 }
-// pub struct 
