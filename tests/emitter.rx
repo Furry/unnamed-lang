@@ -1,0 +1,3 @@
+fn testEmitter() {
+    return "Hello, World!";
+} !emit Global !interval 10ms;
