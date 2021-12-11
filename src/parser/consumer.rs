@@ -2,7 +2,7 @@ use super::super::lexer::token::Token;
 
 trait Consumer {
     fn consume(&mut self, input: Token) -> bool;
-    fn supply(&mut self) -> Option<>;
+    // fn supply(&mut self) -> Option<>;
 }
 
 trait Supplier {
